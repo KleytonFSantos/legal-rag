@@ -11,12 +11,13 @@ use Spatie\PdfToText\Pdf;
 
 class EmbeddingCreateCommand extends Command
 {
-    protected $signature = 'document:index';
+    protected $signature = 'document:index {path}';
     protected $description = 'Indexa um documento como embedding';
 
     public function handle(EmbeddingService $embedder): void
     {
-        $filePath = Storage::path('2021_Direito_Civil_Teoria_Geral_dos_Contratos_e_Contratos_em_Espécie.pdf');
+        $path = $this->argument('path');
+        $filePath = Storage::path($path);
         $text = Pdf::getText($filePath);
         $text = mb_convert_encoding($text, 'UTF-8', 'auto');
 
