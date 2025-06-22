@@ -11,7 +11,7 @@ use Spatie\PdfToText\Pdf;
 
 class EmbeddingCreateCommand extends Command
 {
-    protected $signature = 'document:index {path}';
+    protected $signature = 'embed:document {path}';
     protected $description = 'Indexa um documento como embedding';
 
     public function handle(EmbeddingService $embedder): void
