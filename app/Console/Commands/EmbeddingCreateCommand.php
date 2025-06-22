@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\PdfToText\Pdf;
 
-class EmbeddingCommandCreateCommand extends Command
+class EmbeddingCreateCommand extends Command
 {
     protected $signature = 'document:index';
     protected $description = 'Indexa um documento como embedding';
@@ -20,7 +20,6 @@ class EmbeddingCommandCreateCommand extends Command
         $text = Pdf::getText($filePath);
         $text = mb_convert_encoding($text, 'UTF-8', 'auto');
 
-        // Dividir o texto em partes menores (chunks) de no máximo 20 parágrafos
         $chunks = Str::of($text)->split('/(\r?\n){2,}/')->chunk(20);
 
         $finalVector = [];
@@ -42,7 +41,6 @@ class EmbeddingCommandCreateCommand extends Command
                 'updated_at' => now(),
             ]);
         }
-
 
         $this->info('Salvo ' . count($embeddedChunks) . ' embeddings, média do embedding: ' . $embeddedChunk ?? '');
     }
