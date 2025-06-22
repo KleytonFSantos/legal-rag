@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Service\EmbeddingService;
 use App\Service\RagService;
 use OpenAI\Laravel\Facades\OpenAI;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,10 +10,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatAction extends Controller
 {
-    public function __invoke(Request $request, RagService $rag, EmbeddingService $embeddingService): StreamedResponse
-    {
+    public function __construct(
+        private readonly RagService $ragService,
+    ) {
+    }
+
+    public function __invoke(Request $request): StreamedResponse {
         $pergunta = $request->get('pergunta');
-        $contexto = $rag->searchContext($pergunta);
+        $contexto = $this->ragService->searchContext($pergunta);
 
         return response()->stream(function () use ($pergunta, $contexto) {
             $stream = OpenAI::chat()->createStreamed([
@@ -23,7 +26,9 @@ class ChatAction extends Controller
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => "Você é um assistente jurídico especializado em direito trabalhista. Use o seguinte conteúdo como base:\n\n{$contexto}",
+                        'content' => "Você é um assistente jurídico especializado "
+                        . "em direito trabalhista. Use o seguinte conteúdo como base: " .
+                            "\n\n$contexto"
                     ],
                     [
                         'role' => 'user',
