@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Service\OpenAIStreamClientService;
 use App\Service\RagService;
 use OpenAI\Laravel\Facades\OpenAI;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,30 +13,16 @@ class ChatAction extends Controller
 {
     public function __construct(
         private readonly RagService $ragService,
+        private readonly OpenAIStreamClientService $openAIClientService
     ) {
     }
 
     public function __invoke(Request $request): StreamedResponse {
-        $pergunta = $request->get('pergunta');
-        $contexto = $this->ragService->searchContext($pergunta);
+        $question = $request->get('question');
+        $context = $this->ragService->searchContext($question);
 
-        return response()->stream(function () use ($pergunta, $contexto) {
-            $stream = OpenAI::chat()->createStreamed([
-                'model' => 'deepseek/deepseek-chat-v3-0324:free',
-                'stream' => true,
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => "Você é um assistente jurídico especializado "
-                        . "em direito trabalhista. Use o seguinte conteúdo como base: " .
-                            "\n\n$contexto"
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $pergunta,
-                    ],
-                ],
-            ]);
+        return response()->stream(function () use ($question, $context) {
+            $stream = $this->openAIClientService->handle($question, $context);
 
             foreach ($stream as $chunk) {
                 if (isset($chunk->choices[0]->delta->content)) {
