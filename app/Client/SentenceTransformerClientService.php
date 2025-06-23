@@ -18,7 +18,7 @@ final readonly class SentenceTransformerClientService
 
     public function handle(array $chunks): ResponseInterface
     {
-        return $this->client->post(env('SENTENCE_TRANSFORMAR_URI'), [
+        return $this->client->post(env('SENTENCE_TRANSFORMER_URI'), [
             'headers' => [
                 'Authorization' => 'Bearer ' . env('HUGGINGFACE_TOKEN'),
                 'Content-Type' => 'application/json',
