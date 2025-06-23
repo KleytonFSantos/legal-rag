@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Client\OpenAIStreamClientService;
 use App\Http\Controllers\Controller;
-use App\Service\OpenAIStreamClientService;
 use App\Service\RagService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;

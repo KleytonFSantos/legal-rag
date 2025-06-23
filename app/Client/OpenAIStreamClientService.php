@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Client;
 
 use OpenAI\Laravel\Facades\OpenAI;
 use OpenAI\Responses\StreamResponse;
@@ -8,6 +8,7 @@ use OpenAI\Responses\StreamResponse;
 final readonly class OpenAIStreamClientService
 {
     const string MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+
     public function handle(string $question, string $context): StreamResponse
     {
         return OpenAI::chat()->createStreamed([
