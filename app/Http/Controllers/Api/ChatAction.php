@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Service\OpenAIStreamClientService;
 use App\Service\RagService;
-use OpenAI\Laravel\Facades\OpenAI;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
